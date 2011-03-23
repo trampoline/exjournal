@@ -2,8 +2,18 @@ require 'action_mailer'
 require 'tmail'
 
 module Exjournal
+  class << self
+    def logger=(l)
+      @logger=l
+    end
+
+    def logger
+      @logger ||= Logger.new($stderr)
+    end
+  end
+
   module_function
-  
+
   # extract the first message/rfc822 attachment from the RFC822 encoded content, and return it as a TMail::Mail
   # if +headers_only+ is true then message content will be discarded, and only headers processed
   def extract_journalled_mail(mail, strip_content=true)
@@ -45,9 +55,17 @@ module Exjournal
     {:name=>address.name, :address=>address.address}
   end
 
-  # parse one or more addresses to hash
+  # parse one or more addresses to hash. failures result in a warning logged
   def parse_addresses(addresses)
-    [*(addresses||[])].map{|a| parse_address(a)}
+    [*(addresses||[])].map do |a| 
+      begin
+        parse_address(a)
+      rescue Exception=>e
+        logger.warn("failure parsing: #{a}")
+        logger.warn(e)
+        nil
+      end
+    end.compact
   end
 
   # turn a TMail::Mail into a has suitable for JSON representation

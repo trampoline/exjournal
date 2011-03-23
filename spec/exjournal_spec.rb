@@ -85,6 +85,13 @@ Subject: i can't tell you
       h.should == [{:name=>"foo mcfoo", :address=>"foo@bar.com"},
                    {:name=>"baz mcbaz", :address=>"baz@boo.com"}]
     end
+
+    it "should skip unparseable addresses and log a warning" do
+      mock(Exjournal.logger).warn(anything).times(2)
+      h = Exjournal.parse_addresses(['"foo mcfoo" <foo@bar.com>',
+                                     '"baz mcbaz" <<baz@boo.com>'])
+      h.should == [{:name=>"foo mcfoo", :address=>"foo@bar.com"}]
+    end
   end
 
   describe "mail_to_hash" do
