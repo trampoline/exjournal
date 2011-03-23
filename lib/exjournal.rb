@@ -52,7 +52,7 @@ module Exjournal
   # parse an address to a hash
   def parse_address(address)
     address = TMail::Address.parse(address) if address.is_a?(String)
-    {:name=>address.name, :address=>address.address}
+    {:name=>address.name, :email_address=>address.address}
   end
 
   # parse one or more addresses to hash. failures result in a warning logged
@@ -77,6 +77,7 @@ module Exjournal
     in_reply_to = strip_headers(mail.in_reply_to) if mail.in_reply_to
     references = strip_headers(mail.references) if mail.references
     from = parse_addresses(mail.from_addrs).first
+    sender = parse_addresses(mail.sender).first
     to = parse_addresses(mail.to_addrs)
     cc=parse_addresses(mail.cc_addrs)
     bcc=parse_addresses(mail.bcc_addrs)
@@ -87,6 +88,7 @@ module Exjournal
       :in_reply_to=>in_reply_to,
       :references=>references,
       :from=>from,
+      :sender=>sender,
       :to=>to,
       :cc=>cc,
       :bcc=>bcc

@@ -6,6 +6,7 @@ X-Apple-Base-Url: x-msg://1/
 X-Universally-Unique-Identifier: c7cc15b2-7186-4f82-9936-894288fe9450
 X-Apple-Mail-Remote-Attachments: YES
 From: Peter MacRobert <peter.macrobert@empire42.com>
+Sender: foo@bar.com
 X-Apple-Windows-Friendly: 1
 Date: Wed, 21 Apr 2010 14:43:24 +0100
 Content-Transfer-Encoding: 7bit

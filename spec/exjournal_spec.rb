@@ -69,28 +69,28 @@ Subject: i can't tell you
   describe "parse_address" do
     it "should extract a hash from an address" do
       h = Exjournal.parse_address(TMail::Address.parse('"foo mcfoo" <foo@bar.com>'))
-      h.should == {:name=>"foo mcfoo", :address=>"foo@bar.com"}
+      h.should == {:name=>"foo mcfoo", :email_address=>"foo@bar.com"}
     end
   end
 
   describe "parse_addresses" do
     it "should extract a hash from a single address" do
       h = Exjournal.parse_addresses(TMail::Address.parse('"foo mcfoo" <foo@bar.com>'))
-      h.should == [{:name=>"foo mcfoo", :address=>"foo@bar.com"}]
+      h.should == [{:name=>"foo mcfoo", :email_address=>"foo@bar.com"}]
     end
 
     it "should extract hashes from more than one address" do
       h = Exjournal.parse_addresses([TMail::Address.parse('"foo mcfoo" <foo@bar.com>'),
                                      TMail::Address.parse('"baz mcbaz" <baz@boo.com>')])
-      h.should == [{:name=>"foo mcfoo", :address=>"foo@bar.com"},
-                   {:name=>"baz mcbaz", :address=>"baz@boo.com"}]
+      h.should == [{:name=>"foo mcfoo", :email_address=>"foo@bar.com"},
+                   {:name=>"baz mcbaz", :email_address=>"baz@boo.com"}]
     end
 
     it "should skip unparseable addresses and log a warning" do
       mock(Exjournal.logger).warn(anything).times(2)
       h = Exjournal.parse_addresses(['"foo mcfoo" <foo@bar.com>',
                                      '"baz mcbaz" <<baz@boo.com>'])
-      h.should == [{:name=>"foo mcfoo", :address=>"foo@bar.com"}]
+      h.should == [{:name=>"foo mcfoo", :email_address=>"foo@bar.com"}]
     end
   end
 
@@ -105,9 +105,10 @@ Subject: i can't tell you
       h[:references].should == ["B63CAA43-F378-4033-BA8B-foo@empire42.com", 
                                 "B63CAA43-F378-4033-BA8B-bar@empire42.com", 
                                 "B63CAA43-F378-4033-BA8B-baz@empire42.com"]
-      h[:from].should == {:name=>"Peter MacRobert", :address=>"peter.macrobert@empire42.com"}
-      h[:to].should == [{:name=>nil, :address=>"foo@bar.com"},
-                        {:name=>"bar mcbar", :address=>"bar.mcbar@bar.com"}]
+      h[:from].should == {:name=>"Peter MacRobert", :email_address=>"peter.macrobert@empire42.com"}
+      h[:sender].should == {:name=>nil, :email_address=>"foo@bar.com"}
+      h[:to].should == [{:name=>nil, :email_address=>"foo@bar.com"},
+                        {:name=>"bar mcbar", :email_address=>"bar.mcbar@bar.com"}]
       h[:cc].should == []
       h[:bcc].should == []
       h[:subject].should == nil
@@ -123,9 +124,9 @@ Subject: i can't tell you
       h[:references].should == ["B63CAA43-F378-4033-BA8B-foo@empire42.com", 
                                 "B63CAA43-F378-4033-BA8B-bar@empire42.com", 
                                 "B63CAA43-F378-4033-BA8B-baz@empire42.com"]
-      h[:from].should == {:name=>"Peter MacRobert", :address=>"peter.macrobert@empire42.com"}
-      h[:to].should == [{:name=>nil, :address=>"foo@bar.com"},
-                        {:name=>"bar mcbar", :address=>"bar.mcbar@bar.com"}]
+      h[:from].should == {:name=>"Peter MacRobert", :email_address=>"peter.macrobert@empire42.com"}
+      h[:to].should == [{:name=>nil, :email_address=>"foo@bar.com"},
+                        {:name=>"bar mcbar", :email_address=>"bar.mcbar@bar.com"}]
       h[:cc].should == []
       h[:bcc].should == []
       h[:subject].should == "Test email"
